@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -11,7 +12,12 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = ["Experience", "Craft", "Ritual", "Order"];
+  const links = [
+    { label: "Shop", to: "/products" as const },
+    { label: "Story", href: "/#experience" },
+    { label: "Craft", href: "/#craft" },
+    { label: "Ritual", href: "/#ritual" },
+  ];
 
   return (
     <motion.nav
@@ -25,20 +31,25 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#" className="font-display text-xl tracking-wider text-gradient-gold">
+        <Link to="/" className="font-display text-xl tracking-wider text-gradient-gold">
           SANDAL 1
-        </a>
+        </Link>
 
         <div className="hidden gap-8 md:flex">
-          {links.map((l) => (
-            <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
-              className="text-sm tracking-widest uppercase text-muted-foreground transition-colors hover:text-primary"
-            >
-              {l}
-            </a>
-          ))}
+          {links.map((l) =>
+            "to" in l ? (
+              <Link key={l.label} to={l.to} className="text-sm tracking-widest uppercase text-muted-foreground transition-colors hover:text-primary">
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.label} href={l.href} className="text-sm tracking-widest uppercase text-muted-foreground transition-colors hover:text-primary">
+                {l.label}
+              </a>
+            )
+          )}
+          <Link to="/auth" className="text-sm tracking-widest uppercase text-muted-foreground transition-colors hover:text-primary">
+            Account
+          </Link>
         </div>
 
         <button
@@ -61,16 +72,14 @@ export default function Navbar() {
             className="overflow-hidden bg-background/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-4 px-6 py-6">
-              {links.map((l) => (
-                <a
-                  key={l}
-                  href={`#${l.toLowerCase()}`}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg tracking-widest uppercase text-muted-foreground transition-colors hover:text-primary"
-                >
-                  {l}
-                </a>
-              ))}
+              {links.map((l) =>
+                "to" in l ? (
+                  <Link key={l.label} to={l.to} onClick={() => setMobileOpen(false)} className="text-lg tracking-widest uppercase text-muted-foreground hover:text-primary">{l.label}</Link>
+                ) : (
+                  <a key={l.label} href={l.href} onClick={() => setMobileOpen(false)} className="text-lg tracking-widest uppercase text-muted-foreground hover:text-primary">{l.label}</a>
+                )
+              )}
+              <Link to="/auth" onClick={() => setMobileOpen(false)} className="text-lg tracking-widest uppercase text-muted-foreground hover:text-primary">Account</Link>
             </div>
           </motion.div>
         )}
