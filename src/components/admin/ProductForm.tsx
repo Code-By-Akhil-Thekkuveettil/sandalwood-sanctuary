@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Upload, X, Plus } from "lucide-react";
 
 type Category = { id: string; name: string };
-type ProductImage = { id?: string; url: string; alt: string; sort_order: number };
+type ProductImage = { id?: string; url: string; alt: string | null; sort_order: number };
 type Variant = { id?: string; name: string; option_value: string; price_delta: number; stock: number };
 
 export default function ProductForm({ productId }: { productId?: string }) {
@@ -103,14 +103,15 @@ export default function ProductForm({ productId }: { productId?: string }) {
     }
 
     // Replace images
-    await supabase.from("product_images").delete().eq("product_id", id!);
+    const pid = id!;
+    await supabase.from("product_images").delete().eq("product_id", pid);
     if (images.length) {
-      await supabase.from("product_images").insert(images.map((img, i) => ({ product_id: id, url: img.url, alt: img.alt, sort_order: i })));
+      await supabase.from("product_images").insert(images.map((img, i) => ({ product_id: pid, url: img.url, alt: img.alt, sort_order: i })));
     }
     // Replace variants
-    await supabase.from("product_variants").delete().eq("product_id", id!);
+    await supabase.from("product_variants").delete().eq("product_id", pid);
     if (variants.length) {
-      await supabase.from("product_variants").insert(variants.map((v, i) => ({ product_id: id, name: v.name, option_value: v.option_value, price_delta: v.price_delta, stock: v.stock, sort_order: i })));
+      await supabase.from("product_variants").insert(variants.map((v, i) => ({ product_id: pid, name: v.name, option_value: v.option_value, price_delta: v.price_delta, stock: v.stock, sort_order: i })));
     }
 
     toast.success("Saved");
