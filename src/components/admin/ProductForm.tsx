@@ -219,7 +219,7 @@ export default function ProductForm({ productId }: { productId?: string }) {
           <div className="flex flex-wrap gap-3">
             {images.map((img, i) => (
               <div key={i} className="relative h-24 w-24">
-                <img src={img.url} alt={img.alt} className="h-full w-full rounded-md object-cover" />
+                <img src={img.url} alt={img.alt ?? ""} className="h-full w-full rounded-md object-cover" />
                 <button onClick={() => setImages(images.filter((_, j) => j !== i))}
                   className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground">
                   <X className="h-3 w-3" />
