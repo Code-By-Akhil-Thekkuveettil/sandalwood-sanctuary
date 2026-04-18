@@ -9,17 +9,41 @@ export default function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.85]);
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 15]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.25]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  const scrollToOrder = () => {
+    document.getElementById("order")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <section ref={ref} className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-radial opacity-60" />
+      {/* Background image with parallax */}
+      <motion.div
+        style={{ y: bgY, scale: bgScale }}
+        className="absolute inset-0 z-0"
+      >
+        <img
+          src={heroProduct}
+          alt="Sandal 1 Box Black Premium Incense Stick"
+          width={1920}
+          height={1920}
+          className="h-full w-full object-cover"
+        />
+      </motion.div>
 
-      <motion.div style={{ y, opacity }} className="relative z-10 flex flex-col items-center px-6 text-center">
+      {/* Cinematic overlays for legibility */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-background/80 via-background/40 to-background" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-background/70 via-transparent to-background/70" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-radial opacity-50" />
+
+      {/* Foreground content */}
+      <motion.div
+        style={{ y: contentY, opacity: contentOpacity }}
+        className="relative z-10 flex flex-col items-center px-6 text-center"
+      >
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -33,7 +57,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4 }}
-          className="font-display text-5xl font-bold leading-tight tracking-tight text-gradient-gold text-shadow-glow sm:text-7xl md:text-8xl lg:text-9xl"
+          className="font-display text-6xl font-bold leading-[0.95] tracking-tight text-gradient-gold text-shadow-glow sm:text-8xl md:text-9xl lg:text-[10rem]"
         >
           Sandal 1
         </motion.h1>
@@ -42,7 +66,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
-          className="mt-2 text-lg tracking-widest uppercase text-muted-foreground sm:text-xl"
+          className="mt-3 text-lg tracking-[0.25em] uppercase text-foreground/90 sm:text-xl"
         >
           Box Black Premium
         </motion.p>
@@ -56,26 +80,36 @@ export default function HeroSection() {
           A masterpiece of fragrance. Hand-rolled with the finest sandalwood, designed to transform every space into a sanctuary.
         </motion.p>
 
-        {/* 3D Product Image */}
+        {/* Order Now CTA */}
         <motion.div
-          style={{ scale, rotateX }}
-          className="perspective-1000 mt-12"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          className="mt-10 flex flex-col items-center gap-4 sm:flex-row"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 60, rotateY: -10 }}
-            animate={{ opacity: 1, y: 0, rotateY: 0 }}
-            transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="preserve-3d"
+          <button
+            onClick={scrollToOrder}
+            className="group relative overflow-hidden rounded-full bg-gradient-gold px-10 py-4 text-sm font-semibold tracking-[0.2em] uppercase text-primary-foreground glow-gold transition-transform hover:scale-105 active:scale-95"
           >
-            <img
-              src={heroProduct}
-              alt="Sandal 1 Box Black Premium Incense Stick"
-              width={1024}
-              height={1024}
-              className="w-72 rounded-lg glow-gold sm:w-96 md:w-[28rem]"
-            />
-          </motion.div>
+            <span className="relative z-10">Order Now</span>
+            <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-700 group-hover:translate-x-full" />
+          </button>
+          <button
+            onClick={() => document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" })}
+            className="rounded-full border border-primary/40 px-10 py-4 text-sm font-semibold tracking-[0.2em] uppercase text-foreground transition-colors hover:bg-primary/10"
+          >
+            Discover
+          </button>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.4 }}
+          className="mt-6 font-display text-2xl text-gradient-gold"
+        >
+          ₹499 <span className="text-sm font-normal tracking-widest uppercase text-muted-foreground">· Free shipping</span>
+        </motion.p>
 
         {/* Scroll indicator */}
         <motion.div
